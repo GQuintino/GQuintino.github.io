@@ -3,67 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página com 4 QR Codes</title>
+    <title>Serviços Grupo Chavantes = Hospital Waldemar Tebaldi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Estilos básicos inspirados nos arquivos fornecidos */
+        :root {
+            --primary-bg: #1e2338;
+            --secondary-bg: #2a304a;
+            --card-bg: #1a1e2d;
+            --button-bg: #008FFB; /* Cor azul dos botões do index.html */
+            --button-hover: #0077CC;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b3c5;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-        }
-        .qrcode-container {
+            line-height: 1.6;
+            min-height: 100vh;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin-top: 30px;
+            justify-content: center;
+            align-items: center;
         }
-        .qrcode {
-            margin: 15px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        .container {
+            max-width: 960px;
+            width: 100%;
+            padding: 30px;
+            background-color: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .qrcode img {
-            width: 150px;
-            height: 150px;
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Posiciona logo e título */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+            gap: 15px; /* Espaço entre logo e título se quebrar linha */
         }
-        .qrcode p {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #555;
+
+        .logo-placeholder {
+            width: 180px; /* Largura do espaço do logo */
+            height: 70px; /* Altura do espaço do logo */
+            background-color: var(--card-bg);
+            border: 2px dashed var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            text-align: center;
+            flex-shrink: 0; /* Não encolhe */
         }
+
+        h1 {
+            font-size: 1.8rem; /* Tamanho do título */
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: right; /* Alinha título à direita */
+            flex-grow: 1; /* Ocupa o espaço restante */
+            margin: 0; /* Remove margens padrão */
+            line-height: 1.3; /* Ajusta entrelinhas */
+        }
+
+        .button-grid {
+            display: grid;
+            /* Cria colunas responsivas, mínimo 200px, máximo 1fr */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px; /* Espaço entre os botões */
+        }
+
+        .service-button {
+            background-color: var(--button-bg);
+            color: var(--text-primary);
+            padding: 25px 15px; /* Espaçamento interno */
+            border-radius: var(--border-radius);
+            text-decoration: none; /* Remove sublinhado do link */
+            display: flex;
+            flex-direction: column; /* Ícone acima do texto */
+            align-items: center; /* Centraliza itens */
+            justify-content: center; /* Centraliza conteúdo verticalmente */
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            min-height: 150px; /* Altura mínima para consistência */
+            border: none; /* Remove borda padrão de links/botões */
+        }
+
+        .service-button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-5px); /* Efeito sutil de elevação */
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-button i {
+            font-size: 2.8rem; /* Tamanho do ícone */
+            margin-bottom: 15px; /* Espaço entre ícone e texto */
+            width: 50px; /* Fixa largura do ícone para melhor alinhamento */
+            line-height: 1; /* Garante alinhamento vertical do ícone */
+        }
+
+         .service-button span {
+             font-size: 1.1rem; /* Tamanho do texto do botão */
+             font-weight: 500;
+             line-height: 1.3; /* Melhora legibilidade se o texto quebrar */
+         }
+
+        /* Ajustes para telas menores */
+        @media (max-width: 600px) {
+             header {
+                 flex-direction: column; /* Empilha logo e título */
+                 align-items: center; /* Centraliza na vertical */
+                 text-align: center;
+             }
+             h1 {
+                 text-align: center; /* Centraliza título */
+                 margin-top: 15px; /* Espaço abaixo do logo */
+                 font-size: 1.6rem;
+             }
+             .button-grid {
+                grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+             }
+             .service-button i {
+                font-size: 2.5rem;
+             }
+             .service-button span {
+                font-size: 1rem;
+             }
+        }
+
     </style>
 </head>
 <body>
-    <h1>Meus QR Codes</h1>
-    
-    <div class="qrcode-container">
-        <div class="qrcode">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://exemplo.com/qr1" alt="QR Code 1">
-            <p>QR Code 1 - Exemplo 1</p>
-        </div>
-        
-        <div class="qrcode">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://exemplo.com/qr2" alt="QR Code 2">
-            <p>QR Code 2 - Exemplo 2</p>
-        </div>
-        
-        <div class="qrcode">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://exemplo.com/qr3" alt="QR Code 3">
-            <p>QR Code 3 - Exemplo 3</p>
-        </div>
-        
-        <div class="qrcode">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://exemplo.com/qr4" alt="QR Code 4">
-            <p>QR Code 4 - Exemplo 4</p>
-        </div>
+    <div class="container">
+        <header>
+            <div class="logo-placeholder">
+                Espaço para Logo
+            </div>
+            <h1>Serviços Grupo Chavantes<br>= Hospital Waldemar Tebaldi</h1>
+        </header>
+
+        <main>
+            <div class="button-grid">
+
+                <a href="#" class="service-button" aria-label="Acessar serviços de Hotelaria e Refrigeração">
+                    <i class="fas fa-concierge-bell" aria-hidden="true"></i> <span>Hotelaria e Refrigeração</span>
+                </a>
+
+                <a href="#" class="service-button" aria-label="Acessar serviços de Tecnologia e Informação">
+                    <i class="fas fa-laptop-code" aria-hidden="true"></i> <span>Tecnologia e Informação</span>
+                </a>
+
+                <a href="#" class="service-button" aria-label="Acessar serviços de Manutenção Predial">
+                    <i class="fas fa-tools" aria-hidden="true"></i> <span>Manutenção Predial</span>
+                </a>
+
+                <a href="#" class="service-button" aria-label="Acessar Ouvidoria">
+                    <i class="fas fa-headset" aria-hidden="true"></i> <span>Ouvidoria</span>
+                </a>
+
+                <a href="#" class="service-button" aria-label="Registrar ou consultar Eventos Adversos">
+                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> <span>Eventos Adversos</span>
+                 </a>
+
+            </div>
+        </main>
     </div>
-    
-    <p style="margin-top: 30px; color: #777;">Escaneie os QR Codes acima com o seu smartphone</p>
 </body>
 </html>
