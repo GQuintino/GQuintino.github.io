@@ -54,21 +54,24 @@
             gap: 15px; /* Espaço entre logo e título se quebrar linha */
         }
 
+        /* CSS CORRIGIDO PARA O LOGO */
         .logo-placeholder {
             width: 180px; /* Largura do espaço do logo */
             height: 70px; /* Altura do espaço do logo */
-            background-color: var(--card-bg);
-            border: 2px dashed var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: var(--border-radius);
-            text-align: center;
+            border-radius: var(--border-radius); /* Mantém cantos arredondados */
+            overflow: hidden; /* Garante que a imagem não ultrapasse */
             flex-shrink: 0; /* Não encolhe */
+             /* Estilos do placeholder de texto removidos */
         }
+
+        /* NOVA REGRA CSS PARA A IMAGEM DENTRO DO LOGO */
+        .logo-placeholder img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ajusta a imagem mantendo proporção */
+        }
+
 
         h1 {
             font-size: 1.8rem; /* Tamanho do título */
@@ -82,7 +85,6 @@
 
         .button-grid {
             display: grid;
-            /* Cria colunas responsivas, mínimo 200px, máximo 1fr */
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 25px; /* Espaço entre os botões */
         }
@@ -145,40 +147,43 @@
                 font-size: 1rem;
              }
         }
-
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo-placeholder">
-               <img src="https://media.licdn.com/dms/image/v2/D4D0BAQEVPuGbXNaO9g/company-logo_200_200/B4DZUjbqcxHYAM-/0/1740056209644/chavantes_logo?e=2147483647&v=beta&t=RR6W8OwoyPgZtbRcrlq7BIFPosXIEAFoAoePL65UKa4">
+               <img src="https://media.licdn.com/dms/image/v2/D4D0BAQEVPuGbXNaO9g/company-logo_200_200/B4DZUjbqcxHYAM-/0/1740056209644/chavantes_logo?e=2147483647&v=beta&t=RR6W8OwoyPgZtbRcrlq7BIFPosXIEAFoAoePL65UKa4" alt="Logo Grupo Chavantes">
             </div>
-            <h1>Serviços Grupo Chavantes<br>= Hospital Waldemar Tebaldi</h1>
+            <h1>Serviços Grupo Chavantes<br> Hospital Waldemar Tebaldi</h1>
         </header>
 
         <main>
             <div class="button-grid">
-
-                <a href="#" class="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" aria-label="Acessar serviços de Hotelaria e Refrigeração">
-                    <i class="fas fa-concierge-bell" aria-hidden="true"></i> <span>Hotelaria e Refrigeração</span>
+                <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-button" aria-label="Acessar serviços de Hotelaria e Refrigeração">
+                    <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                    <span>Hotelaria e Refrigeração</span>
                 </a>
 
-                <a href="#" class="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" aria-label="Acessar serviços de Tecnologia e Informação">
-                    <i class="fas fa-laptop-code" aria-hidden="true"></i> <span>Tecnologia e Informação</span>
+                <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-button" aria-label="Acessar serviços de Tecnologia e Informação">
+                    <i class="fas fa-laptop-code" aria-hidden="true"></i>
+                    <span>Tecnologia e Informação</span>
                 </a>
 
-                <a href="#" class="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" aria-label="Acessar serviços de Manutenção Predial">
-                    <i class="fas fa-tools" aria-hidden="true"></i> <span>Manutenção Predial</span>
+                <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-button" aria-label="Acessar serviços de Manutenção Predial">
+                    <i class="fas fa-tools" aria-hidden="true"></i>
+                    <span>Manutenção Predial</span>
                 </a>
 
                 <a href="#" class="service-button" aria-label="Acessar Ouvidoria">
-                    <i class="fas fa-headset" aria-hidden="true"></i> <span>Ouvidoria</span>
+                    <i class="fas fa-headset" aria-hidden="true"></i>
+                    <span>Ouvidoria</span>
                 </a>
 
-                <a href="#" class="https://forms.office.com/r/wF9c5wZDE0" aria-label="Registrar ou consultar Eventos Adversos">
-                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> <span>Eventos Adversos</span>
-                 </a>
+                <a href="https://forms.office.com/r/wF9c5wZDE0" class="service-button" aria-label="Registrar ou consultar Eventos Adversos">
+                     <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                     <span>Eventos Adversos</span>
+                </a>
 
             </div>
         </main>
