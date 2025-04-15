@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocupação de Leitos</title>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #1e2338;
+            --secondary-bg: #2a304a;
+            --card-bg: #1a1e2d;
+            --accent-color: #3a7bd5;
+            --danger-color: #ff4560;
+            --success-color: #00b09b;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b3c5;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+            --verde: #00b09b;
+            --amarelo: #FEB019;
+            --laranja: #FF7F00;
+            --vermelho: #FF4560;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .back-button {
+            background: var(--secondary-bg);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background: #3a405e;
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 30px;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-button {
+            background: linear-gradient(135deg, var(--accent-color), #00d2ff);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(58, 123, 213, 0.3);
+        }
+
+        .filter-button:active {
+            transform: translateY(0);
+        }
+
+        .indicator-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .indicator-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .indicator-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-verde {
+            background-color: rgba(0, 176, 155, 0.2);
+            color: #00b09b;
+            border: 2px solid #00b09b;
+        }
+
+        .indicator-amarelo {
+            background-color: rgba(254, 176, 25, 0.2);
+            color: #FEB019;
+            border: 2px solid #FEB019;
+        }
+
+        .indicator-laranja {
+            background-color: rgba(255, 127, 0, 0.2);
+            color: #FF7F00;
+            border: 2px solid #FF7F00;
+        }
+
+        .indicator-vermelho {
+            background-color: rgba(255, 69, 96, 0.2);
+            color: #FF4560;
+            border: 2px solid #FF4560;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100%;
+            min-height: 320px;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(58, 123, 213, 0.3);
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), #00d2ff);
+        }
+
+        .legend {
+            font-size: 0.85rem;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-bar {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .powered-by {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .filter-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 1001;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-popup h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .filter-popup label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .filter-popup label:hover {
+            background-color: rgba(58, 123, 213, 0.2);
+        }
+
+        .filter-popup input[type="checkbox"] {
+            margin-right: 12px;
+            accent-color: var(--accent-color);
+            width: 18px;
+            height: 18px;
+        }
+
+        .filter-popup button {
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .filter-popup button:hover {
+            background: #2c68c7;
+        }
+
+        .full-screen-chart {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 1002;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .full-screen-chart button {
+            background: var(--danger-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            transition: var(--transition);
+        }
+
+        .full-screen-chart button:hover {
+            background: #e03c55;
+        }
+
+        #expanded-chart {
+            height: 60vh;
+            min-height: 400px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 15px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .filter-popup {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .full-screen-chart {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chart-container {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .chart-container:nth-child(1) { animation-delay: 0.1s; }
+        .chart-container:nth-child(2) { animation-delay: 0.2s; }
+        .chart-container:nth-child(3) { animation-delay: 0.3s; }
+        .chart-container:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        
+        <div class="header">
+            <h1>Monitoramento de Ocupação de Leitos</h1>
+            <button class="filter-button" onclick="toggleFilterPopup()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path>
+                </svg>
+                Filtrar Setores
+            </button>
+        </div>
+
+        <div class="status-container">
+            <div class="status-bar">
+                Última atualização: <span id="last-update"></span>
+            </div>
+            <div class="powered-by">
+                Powered by <a href="#" target="_blank">@Quincrafts</a>
+            </div>
+        </div>
+
+        <!-- Indicador de Ocupação Hospitalar -->
+        <div class="indicator-container" id="indicator-container">
+            <div class="indicator-title">Ocupação Hospitalar</div>
+            <div class="indicator-value" id="ocupacao-hospitalar">--%</div>
+        </div>
+
+        <div class="overlay" id="overlay" onclick="closePopups()"></div>
+
+        <div class="filter-popup" id="filter-popup">
+            <h3>Selecione os Setores para Monitoramento</h3>
+            <div id="filter-container"></div>
+            <button onclick="closePopups()">Aplicar Filtros</button>
+        </div>
+
+        <div class="full-screen-chart" id="full-screen-chart">
+            <div id="expanded-chart"></div>
+            <button onclick="closeFullScreenChart()">Fechar Visualização</button>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container" id="chart-container-0" onclick="expandChart(0)">
+                <div id="chart-0"></div>
+                <div class="legend" id="legend-0"></div>
+            </div>
+            <div class="chart-container" id="chart-container-1" onclick="expandChart(1)">
+                <div id="chart-1"></div>
+                <div class="legend" id="legend-1"></div>
+            </div>
+            <div class="chart-container" id="chart-container-2" onclick="expandChart(2)">
+                <div id="chart-2"></div>
+                <div class="legend" id="legend-2"></div>
+            </div>
+            <div class="chart-container" id="chart-container-3" onclick="expandChart(3)">
+                <div id="chart-3"></div>
+                <div class="legend" id="legend-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Powered by <a href="#" target="_blank">@Quincrafts</a>
+    </footer>
+
+    <script>
+        // Configurações
+        const STORAGE_KEY = 'ocupacao_filtros_selecionados';
+        let dadosRecebidos = [];
+        let setoresSelecionados = new Set();
+        let indexAtual = 0;
+        let charts = [];
+
+        // Carrega filtros salvos do localStorage
+        function carregarFiltrosSalvos() {
+            const filtrosSalvos = localStorage.getItem(STORAGE_KEY);
+            if (filtrosSalvos) {
+                try {
+                    const filtros = JSON.parse(filtrosSalvos);
+                    if (Array.isArray(filtros) && filtros.length > 0) {
+                        return new Set(filtros);
+                    }
+                } catch (e) {
+                    console.error("Erro ao carregar filtros:", e);
+                }
+            }
+            return null;
+        }
+
+        // Salva filtros no localStorage
+        function salvarFiltros() {
+            const filtrosParaSalvar = Array.from(setoresSelecionados);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtrosParaSalvar));
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        function getCorPorOcupacao(taxa) {
+            if (taxa <= 35) return '#00b09b'; // Verde
+            if (taxa <= 50) return '#FEB019'; // Amarelo
+            if (taxa <= 60) return '#FF7F00'; // Laranja
+            return '#FF4560'; // Vermelho
+        }
+
+        function calcularOcupacaoMedia() {
+            const setoresFiltrados = dadosRecebidos.filter(setor => setoresSelecionados.has(setor.nomecc));
+            if (setoresFiltrados.length === 0) return 0;
+
+            const soma = setoresFiltrados.reduce((total, setor) => {
+                return total + Math.min(Math.max(setor.taxa_de_ocupacao, 0), 100);
+            }, 0);
+
+            return soma / setoresFiltrados.length;
+        }
+
+        function atualizarIndicador() {
+            const media = calcularOcupacaoMedia();
+            const elemento = document.getElementById('ocupacao-hospitalar');
+            
+            if (!elemento) return;
+
+            elemento.textContent = media.toFixed(1) + '%';
+            
+            // Remove todas as classes de cor
+            elemento.className = 'indicator-value';
+            
+            // Adiciona a classe de cor apropriada
+            if (media <= 35) {
+                elemento.classList.add('indicator-verde');
+            } else if (media <= 50) {
+                elemento.classList.add('indicator-amarelo');
+            } else if (media <= 60) {
+                elemento.classList.add('indicator-laranja');
+            } else {
+                elemento.classList.add('indicator-vermelho');
+            }
+        }
+
+        async function fetchDados() {
+            try {
+                const response = await fetch("http://10.172.1.15:3001/dados");
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+                dadosRecebidos = data;
+                
+                // Carrega filtros salvos ou seleciona os primeiros 4 setores
+                const filtrosCarregados = carregarFiltrosSalvos();
+                if (filtrosCarregados) {
+                    setoresSelecionados = filtrosCarregados;
+                } else if (setoresSelecionados.size === 0) {
+                    data.slice(0, 4).forEach(setor => setoresSelecionados.add(setor.nomecc));
+                }
+                
+                criarFiltros();
+                mostrarGraficos();
+                
+                document.getElementById('last-update').textContent = formatDate(new Date());
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+                document.getElementById('last-update').textContent = "Erro ao carregar dados - " + error.message;
+            }
+        }
+
+        function toggleFilterPopup() {
+            const popup = document.getElementById("filter-popup");
+            const overlay = document.getElementById("overlay");
+
+            popup.style.display = popup.style.display === "block" ? "none" : "block";
+            overlay.style.display = overlay.style.display === "block" ? "none" : "block";
+        }
+
+        function closePopups() {
+            document.getElementById("filter-popup").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+            salvarFiltros();
+        }
+
+        function criarFiltros() {
+            const filterContainer = document.getElementById("filter-container");
+            filterContainer.innerHTML = "";
+
+            const setoresOrdenados = [...dadosRecebidos].sort((a, b) => 
+                a.nomecc.localeCompare(b.nomecc));
+
+            setoresOrdenados.forEach(setor => {
+                const label = document.createElement("label");
+                label.innerHTML = `
+                    <input type="checkbox" value="${setor.nomecc}" ${setoresSelecionados.has(setor.nomecc) ? 'checked' : ''} onchange="atualizarSelecao(event)">
+                    ${setor.nomecc}
+                `;
+                filterContainer.appendChild(label);
+            });
+        }
+
+        function atualizarSelecao(event) {
+            const setor = event.target.value;
+            if (event.target.checked) {
+                setoresSelecionados.add(setor);
+            } else {
+                setoresSelecionados.delete(setor);
+            }
+            indexAtual = 0;
+            mostrarGraficos();
+            atualizarIndicador();
+            salvarFiltros();
+        }
+
+        function mostrarGraficos() {
+            if (dadosRecebidos.length === 0) {
+                console.log("Nenhum dado recebido para exibir gráficos");
+                return;
+            }
+
+            // Destruir gráficos existentes
+            charts.forEach(chart => {
+                if (chart && typeof chart.destroy === 'function') {
+                    chart.destroy();
+                }
+            });
+            charts = [];
+
+            const setoresFiltrados = dadosRecebidos.filter(setor => setoresSelecionados.has(setor.nomecc));
+            if (setoresFiltrados.length === 0) {
+                console.log("Nenhum setor selecionado para exibir");
+                return;
+            }
+
+            for (let i = 0; i < 4; i++) {
+                const setorIndex = (indexAtual + i) % setoresFiltrados.length;
+                const setor = setoresFiltrados[setorIndex];
+                const container = document.getElementById(`chart-${i}`);
+                const legenda = document.getElementById(`legend-${i}`);
+
+                if (!container || !legenda) {
+                    console.error(`Elemento do gráfico ${i} não encontrado`);
+                    continue;
+                }
+
+                container.innerHTML = "";
+                
+                let taxaOcupacao = Math.min(Math.max(setor.taxa_de_ocupacao, 0), 120);
+                const corTaxa = getCorPorOcupacao(taxaOcupacao);
+
+                legenda.innerHTML = `
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: ${corTaxa}"></span>
+                        <span>Ocupação: ${taxaOcupacao.toFixed(1)}%</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #008FFB"></span>
+                        <span>Efetivos: ${setor.leitos_efetivos}</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: #775DD0"></span>
+                        <span>Ocupados: ${setor.leitos_ocupados}</span>
+                    </div>
+                `;
+
+                const options = {
+                    chart: { 
+                        type: "radialBar",
+                        height: 280,
+                        background: "transparent",
+                        animations: {
+                            enabled: true,
+                            easing: 'easeinout',
+                            speed: 800
+                        }
+                    },
+                    title: { 
+                        text: setor.nomecc, 
+                        align: "center", 
+                        style: { 
+                            color: "white", 
+                            fontSize: "16px",
+                            fontWeight: 600
+                        },
+                        margin: 5
+                    },
+                    series: [taxaOcupacao],
+                    colors: [corTaxa],
+                    plotOptions: {
+                        radialBar: {
+                            startAngle: -135,
+                            endAngle: 135,
+                            hollow: {
+                                margin: 0,
+                                size: '55%',
+                                background: 'transparent',
+                            },
+                            track: {
+                                background: 'rgba(255, 255, 255, 0.1)',
+                                strokeWidth: '90%',
+                                margin: 5,
+                            },
+                            dataLabels: {
+                                name: {
+                                    fontSize: '12px',
+                                    color: 'white',
+                                    offsetY: 30,
+                                    show: true
+                                },
+                                value: {
+                                    offsetY: -5,
+                                    fontSize: '22px',
+                                    fontWeight: 'bold',
+                                    color: 'white',
+                                    formatter: function (val) {
+                                        return val + "%";
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    stroke: {
+                        lineCap: "round"
+                    },
+                    labels: ["Taxa de Ocupação"],
+                };
+
+                try {
+                    const chart = new ApexCharts(container, options);
+                    chart.render();
+                    charts.push(chart);
+                } catch (error) {
+                    console.error(`Erro ao renderizar gráfico ${i}:`, error);
+                }
+            }
+
+            indexAtual = (indexAtual + 4) % setoresFiltrados.length;
+            atualizarIndicador();
+        }
+
+        function expandChart(chartIndex) {
+            const fullScreenChart = document.getElementById("full-screen-chart");
+            const expandedChartContainer = document.getElementById("expanded-chart");
+            const overlay = document.getElementById("overlay");
+            
+            if (window.expandedChart) {
+                window.expandedChart.destroy();
+            }
+            
+            const setoresFiltrados = dadosRecebidos.filter(setor => setoresSelecionados.has(setor.nomecc));
+            const setorIndex = (indexAtual + chartIndex) % setoresFiltrados.length;
+            const setor = setoresFiltrados[setorIndex];
+            
+            let taxaOcupacao = Math.min(Math.max(setor.taxa_de_ocupacao, 0), 120);
+            const corTaxa = getCorPorOcupacao(taxaOcupacao);
+            
+            const options = {
+                chart: { 
+                    type: "radialBar",
+                    height: '100%',
+                    background: "transparent"
+                },
+                title: { 
+                    text: setor.nomecc, 
+                    align: "center", 
+                    style: { 
+                        color: "white", 
+                        fontSize: "24px",
+                        fontWeight: 600
+                    },
+                    margin: 20
+                },
+                series: [taxaOcupacao],
+                colors: [corTaxa],
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135,
+                        endAngle: 135,
+                        hollow: {
+                            margin: 0,
+                            size: '60%',
+                            background: 'transparent',
+                        },
+                        track: {
+                            background: 'rgba(255, 255, 255, 0.1)',
+                            strokeWidth: '97%',
+                            margin: 5,
+                        },
+                        dataLabels: {
+                            name: {
+                                fontSize: '22px',
+                                color: 'white',
+                                offsetY: 80
+                            },
+                            value: {
+                                offsetY: 0,
+                                fontSize: '42px',
+                                fontWeight: 'bold',
+                                color: 'white',
+                                formatter: function (val) {
+                                    return val + "%";
+                                }
+                            }
+                        }
+                    }
+                },
+                stroke: {
+                    lineCap: "round"
+                },
+                labels: ["Taxa de Ocupação"],
+            };
+            
+            window.expandedChart = new ApexCharts(expandedChartContainer, options);
+            window.expandedChart.render();
+            
+            fullScreenChart.style.display = "block";
+            overlay.style.display = "block";
+        }
+
+        function closeFullScreenChart() {
+            document.getElementById("full-screen-chart").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+            
+            if (window.expandedChart) {
+                window.expandedChart.destroy();
+                window.expandedChart = null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchDados();
+            setInterval(fetchDados, 60000);
+            setInterval(mostrarGraficos, 20000);
+        });
+    </script>
+</body>
+</html>

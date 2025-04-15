@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo PSA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #1e2338;
+            --secondary-bg: #2a304a;
+            --card-bg: #1a1e2d;
+            --amarelo: #FEB019;
+            --verde: #00B09B;
+            --azul: #008FFB;
+            --alerta: #ff456165;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b3c5;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0 15px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .back-button {
+            background: var(--secondary-bg);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background: #3a405e;
+            transform: translateY(-2px);
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background-color: var(--secondary-bg);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .refresh-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-icon {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .cards-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 20px;
+            padding: 10px;
+            max-width: 100%;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-secondary) var(--primary-bg);
+        }
+
+        .cards-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .cards-container::-webkit-scrollbar-track {
+            background: var(--primary-bg);
+        }
+
+        .cards-container::-webkit-scrollbar-thumb {
+            background-color: var(--text-secondary);
+            border-radius: 4px;
+        }
+
+        .card {
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            flex-direction: column;
+            min-height: 280px;
+            width: 300px;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .card-amarelo {
+            background: linear-gradient(135deg, var(--amarelo), #f9d423);
+        }
+
+        .card-verde {
+            background: linear-gradient(135deg, var(--verde), #96c93d);
+        }
+
+        .card-azul {
+            background: linear-gradient(135deg, var(--azul), #00c6fb);
+        }
+
+        .card-header {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-metrics {
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric {
+            margin-bottom: 15px;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .patient-info {
+            background-color: rgba(0, 0, 0, 0.15);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+
+        .patient-ticket {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .alert-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--alerta);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            animation: alert-pulse 0.5s infinite;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .alert-bar.show {
+            transform: translateY(0);
+        }
+
+        @keyframes alert-pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 15px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .status-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card {
+                min-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        
+        <h1>Tempos de Espera no PSA</h1>
+        
+        <div class="status-bar">
+            <div class="refresh-info">
+                <svg class="refresh-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M21.5 22a10 10 0 0 0-10-10"></path>
+                </svg>
+                <span>Atualiza a cada 30s</span>
+            </div>
+            <div id="last-update">-</div>
+        </div>
+
+        <div class="cards-wrapper">
+            <div class="cards-container" id="cards-container">
+                <!-- Cards serão gerados dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Powered by <a href="#" target="_blank">@Quincrafts</a>
+    </footer>
+
+    <script>
+        // Configurações
+        const API_URL = 'http://10.172.1.15:3001/tempos_psa';
+        const UPDATE_INTERVAL = 30000; // 30 segundos
+
+        // Limites para alertas
+        const ALERT_LIMITS = {
+            2: { pacientes: 10, tempo: 30 },    // Amarelo
+            3: { pacientes: 20, tempo: 120 },  // Verde
+            4: { pacientes: 30, tempo: 240 }   // Azul
+        };
+
+        // Classificações esperadas
+        const CLASSIFICATIONS = [
+            { id: 2, name: 'Amarelo', class: 'amarelo' },
+            { id: 3, name: 'Verde', class: 'verde' },
+            { id: 4, name: 'Azul', class: 'azul' }
+        ];
+
+        // Variável de controle
+        let refreshTimer;
+
+        // Formata data/hora
+        function formatDateTime(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            } catch {
+                return 'Data inválida';
+            }
+        }
+
+        // Verifica se deve mostrar alerta
+        function shouldShowAlert(classId, item) {
+            if (!item) return false;
+            
+            const limits = ALERT_LIMITS[classId];
+            return (item.qtd_pacientes > limits.pacientes) || 
+                   (item.media_tempo_espera_minutos > limits.tempo);
+        }
+
+        // Busca dados da API
+        async function fetchData() {
+            try {
+                const response = await fetch(`${API_URL}?t=${Date.now()}`);
+                if (!response.ok) throw new Error('Erro na resposta');
+                
+                const data = await response.json();
+                updateCards(data.dados);
+                updateLastUpdate(data.ultimaAtualizacao);
+                
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                // Tenta novamente em 5s se houver erro
+                setTimeout(fetchData, 5000);
+            }
+        }
+
+        // Atualiza os cards com os dados recebidos
+        function updateCards(data) {
+            const container = document.getElementById('cards-container');
+            
+            // Cria um mapa dos dados por classificação
+            const dataMap = {};
+            data.forEach(item => {
+                const classId = parseInt(item.classificacao.split(' - ')[0]);
+                dataMap[classId] = item;
+            });
+
+            // Gera/atualiza os cards
+            container.innerHTML = CLASSIFICATIONS.map(cls => {
+                const item = dataMap[cls.id] || {
+                    qtd_pacientes: 0,
+                    tempo_maximo_espera_minutos: 0,
+                    media_tempo_espera_minutos: 0,
+                    'PACIENTE AGUARDANDO A MAIS TEMPO': 'Nenhum paciente',
+                    'SENHA PACIENTE AGUARDANDO': '-'
+                };
+                
+                const showAlert = shouldShowAlert(cls.id, dataMap[cls.id]);
+                
+                return `
+                    <div class="card card-${cls.class}">
+                        <div class="card-header">${cls.id} - ${cls.name}</div>
+                        <div class="card-metrics">
+                            <div class="metric">
+                                <div class="metric-label">Pacientes aguardando</div>
+                                <div class="metric-value">${item.qtd_pacientes}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Tempo máximo (min)</div>
+                                <div class="metric-value">${item.tempo_maximo_espera_minutos}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Tempo médio (min)</div>
+                                <div class="metric-value">${item.media_tempo_espera_minutos}</div>
+                            </div>
+                        </div>
+                        <div class="patient-info">
+                            <div class="patient-name">${item['PACIENTE AGUARDANDO A MAIS TEMPO']}</div>
+                            <div class="patient-ticket">Senha: ${item['SENHA PACIENTE AGUARDANDO']}</div>
+                        </div>
+                        ${showAlert ? '<div class="alert-bar show">TOMAR MEDIDAS!</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Atualiza o timestamp
+        function updateLastUpdate(timestamp) {
+            document.getElementById('last-update').textContent = `Última atualização: ${formatDateTime(timestamp)}`;
+        }
+
+        // Inicia o ciclo de atualização
+        function startRefreshCycle() {
+            fetchData(); // Executa imediatamente
+            refreshTimer = setInterval(fetchData, UPDATE_INTERVAL);
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            startRefreshCycle();
+        });
+    </script>
+</body>
+</html>

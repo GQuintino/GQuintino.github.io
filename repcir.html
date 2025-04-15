@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Repasses Cirúrgicos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #1e2338;
+            --secondary-bg: #2a304a;
+            --card-bg: #1a1e2d;
+            --accent-color: #3a7bd5;
+            --danger-color: #ff4560;
+            --success-color: #00b09b;
+            --warning-color: #FEB019;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b3c5;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .back-button {
+            background: var(--secondary-bg);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background: #3a405e;
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 30px;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .date-filter {
+            background: var(--secondary-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            flex-grow: 1;
+        }
+
+        .date-input, #cirurgiao-filter {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            min-width: 200px;
+        }
+
+        .filter-button {
+            background: linear-gradient(135deg, var(--accent-color), #00d2ff);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(58, 123, 213, 0.3);
+        }
+
+        .filter-button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #exportar-pdf {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            margin-left: auto;
+            transition: all 0.3s ease;
+        }
+
+        #exportar-pdf:hover {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        #exportar-pdf:disabled {
+            background: #777;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .status-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-bar {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .error-message {
+            color: var(--danger-color);
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .powered-by {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-primary);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background-color: rgba(58, 123, 213, 0.2);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .highlight {
+            font-weight: bold;
+            background-color: rgba(0, 176, 155, 0.1);
+        }
+
+        #tabela-repasses td:nth-child(7) {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+
+        small {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-radius: var(--border-radius);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-color), #00d2ff);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .date-filter {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .date-input, #cirurgiao-filter {
+                width: 100%;
+            }
+            
+            .filter-button, #exportar-pdf {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-content" style="display: none;">
+        <button class="back-button" onclick="window.location.href='cirurgias.html'">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        
+        <h1>Relatório de Repasses Cirúrgicos</h1>
+        
+        <div class="header">
+            <div class="date-filter">
+                <div>
+                    <label for="data-inicio">Data Início:</label>
+                    <input type="date" id="data-inicio" class="date-input" required>
+                </div>
+                <div>
+                    <label for="data-fim">Data Fim:</label>
+                    <input type="date" id="data-fim" class="date-input" required>
+                </div>
+                <div>
+                    <label for="cirurgiao-filter">Cirurgião:</label>
+                    <select id="cirurgiao-filter" class="date-input">
+                        <option value="">Todos os cirurgiões</option>
+                    </select>
+                </div>
+                <button id="filtrar-btn" class="filter-button" disabled>
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+            </div>
+            <button id="exportar-pdf" class="filter-button">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </button>
+        </div>
+
+        <div class="status-container">
+            <div class="status-bar">
+                Última atualização: <span id="last-update">Nenhuma consulta realizada</span>
+                <div id="error-message" class="error-message"></div>
+            </div>
+            <div class="powered-by">
+                Powered by <a href="#" target="_blank">@Quincrafts</a>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="tabela-repasses">
+                <thead>
+                    <tr>
+                        <th>Cód. Cirurgião</th>
+                        <th>Nome do Cirurgião</th>
+                        <th>Nº Atendimento</th>
+                        <th>Total Cirurgias</th>
+                        <th>Datas das Cirurgias</th>
+                        <th>Portes Cirúrgicos</th>
+                        <th>Valor Calculado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Selecione um período e clique em Filtrar</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="login-container" id="login-form">
+        <h2 class="login-title">Acesso ao Relatório</h2>
+        <input type="text" id="username" class="login-input" placeholder="Usuário" required>
+        <input type="password" id="password" class="login-input" placeholder="Senha" required>
+        <button id="login-btn" class="login-button">Entrar</button>
+        <div id="login-error" class="error-message" style="margin-top: 15px;"></div>
+    </div>
+
+    <footer>
+        Powered by <a href="#" target="_blank">@Quincrafts</a>
+    </footer>
+
+    <script>
+        // Configurações
+        const API_URL = 'http://10.172.1.15:3001/repcir';
+        const LOGIN_USER = 'fat';
+        const LOGIN_PASS = 'repasse';
+        let todosDados = [];
+
+        // Elementos do DOM
+        const dataInicioInput = document.getElementById('data-inicio');
+        const dataFimInput = document.getElementById('data-fim');
+        const cirurgiaoFilter = document.getElementById('cirurgiao-filter');
+        const filtrarBtn = document.getElementById('filtrar-btn');
+        const exportarPdfBtn = document.getElementById('exportar-pdf');
+        const lastUpdateSpan = document.getElementById('last-update');
+        const errorMessageDiv = document.getElementById('error-message');
+        const tabelaBody = document.querySelector('#tabela-repasses tbody');
+        const loginForm = document.getElementById('login-form');
+        const mainContent = document.getElementById('main-content');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const loginErrorDiv = document.getElementById('login-error');
+
+        // Formata data para exibição
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            } catch {
+                return 'Data inválida';
+            }
+        }
+
+        // Valida as datas do filtro
+        function validarDatas() {
+            errorMessageDiv.textContent = '';
+            const dataInicio = dataInicioInput.value;
+            const dataFim = dataFimInput.value;
+            
+            if (!dataInicio || !dataFim) {
+                errorMessageDiv.textContent = 'Preencha ambas as datas';
+                filtrarBtn.disabled = true;
+                return false;
+            }
+            
+            const inicio = new Date(dataInicio);
+            const fim = new Date(dataFim);
+            
+            if (isNaN(inicio.getTime())) {
+                errorMessageDiv.textContent = 'Data início inválida';
+                filtrarBtn.disabled = true;
+                return false;
+            }
+            
+            if (isNaN(fim.getTime())) {
+                errorMessageDiv.textContent = 'Data fim inválida';
+                filtrarBtn.disabled = true;
+                return false;
+            }
+            
+            if (fim < inicio) {
+                errorMessageDiv.textContent = 'Data fim não pode ser anterior à data início';
+                filtrarBtn.disabled = true;
+                return false;
+            }
+            
+            filtrarBtn.disabled = false;
+            return true;
+        }
+
+        // Limpa os dados da tabela e filtros
+        function limparDados() {
+            tabelaBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Carregando dados...</td></tr>';
+            todosDados = [];
+            while (cirurgiaoFilter.options.length > 1) {
+                cirurgiaoFilter.remove(1);
+            }
+        }
+
+        // Calcula valores conforme regras especificadas
+        function calcularValoresPorCirurgiao(dadosFiltrados) {
+            const valoresPorte = { 'P': 150, 'M': 300, 'G': 650 };
+            let totalGeral = 0;
+
+            const dadosCalculados = dadosFiltrados.map(item => {
+                const portes = item.portes_cirurgicos.split(', ');
+                let valorTotal = 0;
+                let detalhes = [];
+
+                portes.forEach((porte, index) => {
+                    const porteKey = porte.charAt(0);
+                    let valor = valoresPorte[porteKey] || 0;
+                    
+                    // Aplica regras de valorização
+                    if (portes.length >= 2 && portes.length <= 5) {
+                        if (index === 0) valor *= 1.0;   // 100%
+                        else if (index === 1) valor *= 0.5; // 50%
+                        else valor *= 0.3; // 30%
+                    } else if (portes.length > 5 && index < 5) {
+                        if (index === 0) valor *= 1.0;
+                        else if (index === 1) valor *= 0.5;
+                        else valor *= 0.3;
+                    } else if (portes.length > 5 && index >= 5) {
+                        valor = 0; // Sem valorização a partir do 6º
+                    }
+
+                    valorTotal += valor;
+                    detalhes.push(`${porte}: R$${valor.toFixed(2)}`);
+                });
+
+                totalGeral += valorTotal;
+
+                return {
+                    ...item,
+                    valor_calculado: valorTotal.toFixed(2),
+                    detalhes_valor: detalhes.join(', ')
+                };
+            });
+
+            return { dadosCalculados, totalGeral };
+        }
+
+        // Atualiza a tabela com os dados
+        function atualizarTabela() {
+            const codigoCirurgiao = cirurgiaoFilter.value;
+            
+            if (!codigoCirurgiao) {
+                // Mostra tabela normal sem valores quando nenhum cirurgião está selecionado
+                const html = todosDados.length === 0 
+                    ? '<tr><td colspan="7" style="text-align: center;">Nenhum dado disponível</td></tr>'
+                    : todosDados.map(item => `
+                        <tr>
+                            <td>${item.codigo_cirurgiao}</td>
+                            <td>${item.nome_cirurgiao}</td>
+                            <td>${item.numero_atendimento}</td>
+                            <td>${item.total_cirurgias}</td>
+                            <td>${item.datas_cirurgias}</td>
+                            <td>${item.portes_cirurgicos}</td>
+                            <td>-</td>
+                        </tr>
+                    `).join('');
+                
+                tabelaBody.innerHTML = html;
+                return;
+            }
+
+            // Filtra e calcula valores quando um cirurgião está selecionado
+            const dadosFiltrados = todosDados.filter(item => item.codigo_cirurgiao == codigoCirurgiao);
+            const { dadosCalculados, totalGeral } = calcularValoresPorCirurgiao(dadosFiltrados);
+
+            // Gera HTML da tabela com valores calculados
+            const html = dadosCalculados.length === 0
+                ? '<tr><td colspan="7" style="text-align: center;">Nenhum dado encontrado</td></tr>'
+                : dadosCalculados.map(item => `
+                    <tr>
+                        <td>${item.codigo_cirurgiao}</td>
+                        <td>${item.nome_cirurgiao}</td>
+                        <td>${item.numero_atendimento}</td>
+                        <td>${item.total_cirurgias}</td>
+                        <td>${item.datas_cirurgias}</td>
+                        <td>${item.portes_cirurgicos}<br><small>${item.detalhes_valor}</small></td>
+                        <td class="highlight">R$ ${item.valor_calculado}</td>
+                    </tr>
+                `).join('') + `
+                <tr class="highlight">
+                    <td colspan="6" style="text-align: right;"><strong>TOTAL A REPASSAR:</strong></td>
+                    <td><strong>R$ ${totalGeral.toFixed(2)}</strong></td>
+                </tr>`;
+
+            tabelaBody.innerHTML = html;
+        }
+
+        // Preenche o dropdown de cirurgiões
+        function preencherFiltroCirurgioes() {
+            // Limpa opções existentes (exceto a primeira)
+            while (cirurgiaoFilter.options.length > 1) {
+                cirurgiaoFilter.remove(1);
+            }
+            
+            // Extrai cirurgiões únicos dos dados
+            const cirurgioesUnicos = [...new Map(
+                todosDados.map(item => [item.codigo_cirurgiao, item.nome_cirurgiao])
+            ).entries()];
+            
+            // Adiciona ao dropdown
+            cirurgioesUnicos.forEach(([codigo, nome]) => {
+                const option = document.createElement('option');
+                option.value = codigo;
+                option.textContent = nome;
+                cirurgiaoFilter.appendChild(option);
+            });
+        }
+
+        // Busca dados da API
+        async function fetchData() {
+            if (!validarDatas()) return;
+            
+            const dataInicio = dataInicioInput.value;
+            const dataFim = dataFimInput.value;
+            
+            try {
+                limparDados();
+                filtrarBtn.disabled = true;
+                filtrarBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
+                errorMessageDiv.textContent = '';
+                
+                const response = await fetch(`${API_URL}?dataInicio=${dataInicio}&dataFim=${dataFim}&t=${Date.now()}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.status === 'error') {
+                    throw new Error(data.message);
+                }
+                
+                todosDados = data.data;
+                lastUpdateSpan.textContent = formatDate(data.metadata.gerado_em);
+                
+                preencherFiltroCirurgioes();
+                atualizarTabela();
+                
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+                errorMessageDiv.textContent = error.message;
+                tabelaBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--danger-color);">${error.message}</td></tr>`;
+            } finally {
+                filtrarBtn.disabled = false;
+                filtrarBtn.innerHTML = '<i class="fas fa-filter"></i> Filtrar';
+            }
+        }
+
+        // Função auxiliar para carregar scripts dinamicamente
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = () => reject(new Error(`Falha ao carregar script: ${src}`));
+                document.head.appendChild(script);
+            });
+        }
+
+        // Exporta para PDF (versão robusta)
+        async function exportarParaPDF() {
+            if (!cirurgiaoFilter.value) {
+                alert('Selecione um cirurgião antes de exportar!');
+                return;
+            }
+
+            try {
+                // Mostra loading no botão
+                exportarPdfBtn.disabled = true;
+                exportarPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparando PDF...';
+
+                // Carrega as bibliotecas se necessário
+                if (typeof window.jspdf === 'undefined') {
+                    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+                    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js');
+                }
+
+                // Acessa corretamente o jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Configurações do documento
+                doc.setProperties({
+                    title: `Repasse Cirúrgico - ${cirurgiaoFilter.options[cirurgiaoFilter.selectedIndex].text}`,
+                    author: 'Sistema de Repasses'
+                });
+
+                // Título
+                doc.setFontSize(18);
+                doc.text('Demonstrativo de Repasses Cirúrgicos', 105, 15, { align: 'center' });
+                
+                // Informações do cabeçalho
+                doc.setFontSize(12);
+                const cirurgiaoSelecionado = cirurgiaoFilter.options[cirurgiaoFilter.selectedIndex].text;
+                doc.text(`Cirurgião: ${cirurgiaoSelecionado}`, 14, 25);
+                doc.text(`Período: ${dataInicioInput.value} à ${dataFimInput.value}`, 14, 32);
+                
+                // Dados da tabela
+                const dadosFiltrados = todosDados.filter(item => item.codigo_cirurgiao == cirurgiaoFilter.value);
+                const { dadosCalculados, totalGeral } = calcularValoresPorCirurgiao(dadosFiltrados);
+                
+                // Prepara os dados para a tabela
+                const body = dadosCalculados.map(item => [
+                    item.numero_atendimento,
+                    item.datas_cirurgias.split(', ')[0] || '-',
+                    item.portes_cirurgicos,
+                    `R$ ${item.valor_calculado}`
+                ]);
+
+                // Adiciona o total
+                body.push([
+                    { content: 'TOTAL A REPASSAR:', colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
+                    { content: `R$ ${totalGeral.toFixed(2)}`, styles: { halign: 'right', fontStyle: 'bold' } }
+                ]);
+
+                // Gera a tabela no PDF
+                doc.autoTable({
+                    head: [['Atendimento', 'Data', 'Portes', 'Valor']],
+                    body: body,
+                    startY: 40,
+                    theme: 'grid',
+                    headStyles: {
+                        fillColor: [58, 123, 213],
+                        textColor: 255,
+                        fontStyle: 'bold'
+                    },
+                    columnStyles: {
+                        3: { halign: 'right' }
+                    }
+                });
+
+                // Salva o PDF
+                const fileName = `Repasse_${cirurgiaoSelecionado.replace(/ /g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`;
+                doc.save(fileName);
+
+            } catch (error) {
+                console.error('Erro ao gerar PDF:', error);
+                alert('Erro ao gerar PDF: ' + error.message);
+            } finally {
+                // Restaura o botão
+                if (exportarPdfBtn) {
+                    exportarPdfBtn.disabled = false;
+                    exportarPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Exportar PDF';
+                }
+            }
+        }
+
+        // Verifica login
+        function verificarLogin() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (username === LOGIN_USER && password === LOGIN_PASS) {
+                sessionStorage.setItem('repcir_autenticado', 'true');
+                loginForm.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Configura datas padrão (mês atual)
+                const hoje = new Date();
+                const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+                
+                dataInicioInput.valueAsDate = primeiroDiaMes;
+                dataFimInput.valueAsDate = hoje;
+                
+                // Event listeners
+                dataInicioInput.addEventListener('change', validarDatas);
+                dataFimInput.addEventListener('change', validarDatas);
+                filtrarBtn.addEventListener('click', fetchData);
+                cirurgiaoFilter.addEventListener('change', atualizarTabela);
+                exportarPdfBtn.addEventListener('click', exportarParaPDF);
+                
+                validarDatas();
+            } else {
+                loginErrorDiv.textContent = 'Usuário ou senha incorretos';
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('repcir_autenticado')) {
+                loginForm.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Configura datas padrão (mês atual)
+                const hoje = new Date();
+                const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+                
+                dataInicioInput.valueAsDate = primeiroDiaMes;
+                dataFimInput.valueAsDate = hoje;
+                
+                // Event listeners
+                dataInicioInput.addEventListener('change', validarDatas);
+                dataFimInput.addEventListener('change', validarDatas);
+                filtrarBtn.addEventListener('click', fetchData);
+                cirurgiaoFilter.addEventListener('change', atualizarTabela);
+                exportarPdfBtn.addEventListener('click', exportarParaPDF);
+                
+                validarDatas();
+            } else {
+                loginBtn.addEventListener('click', verificarLogin);
+                
+                // Permite login com Enter
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        verificarLogin();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
