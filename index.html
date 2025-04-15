@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal interno de comunicações e facilidades do Grupo Chavantes - Hospital Waldemar Tebaldi">
+    <title>Portal Interno | Grupo Chavantes - Hospital Waldemar Tebaldi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #1e2338;
+            --secondary-bg: #2a304a;
+            --card-bg: #1a1e2d;
+            --button-bg: #008FFB;
+            --button-hover: #0077CC;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b3c5;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --danger-color: #F44336;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(circle at 10% 20%, rgba(0, 143, 251, 0.1) 0%, transparent 20%);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 30px;
+            background-color: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(0, 143, 251, 0.15) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-placeholder {
+            width: 180px;
+            height: 70px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .logo-placeholder:hover {
+            transform: scale(1.03);
+        }
+
+        .logo-placeholder img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-button {
+            background-color: var(--button-bg);
+            color: var(--text-primary);
+            padding: 25px 15px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            min-height: 150px;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .service-button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-button:hover::after {
+            opacity: 1;
+        }
+
+        .service-button i {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            width: 50px;
+            line-height: 1;
+            transition: var(--transition);
+        }
+
+        .service-button:hover i {
+            transform: scale(1.1);
+        }
+
+        .service-button span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .service-button.compliance {
+            background-color: var(--success-color);
+        }
+
+        .service-button.emergency {
+            background-color: var(--danger-color);
+        }
+
+        .service-button.documents {
+            background-color: var(--warning-color);
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .last-update {
+            font-style: italic;
+            margin-top: 5px;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .header-text {
+                align-items: center;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+                text-align: center;
+            }
+            
+            .button-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-button {
+                min-height: 120px;
+                padding: 20px 15px;
+            }
+            
+            .service-button i {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .service-button span {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-placeholder">
+                    <img src="https://media.licdn.com/dms/image/v2/D4D0BAQEVPuGbXNaO9g/company-logo_200_200/B4DZUjbqcxHYAM-/0/1740056209644/chavantes_logo?e=2147483647&v=beta&t=RR6W8OwoyPgZtbRcrlq7BIFPosXIEAFoAoePL65UKa4" alt="Logo Grupo Chavantes">
+                </div>
+            </div>
+            <div class="header-text">
+                <h1>Portal de Serviços Internos</h1>
+                <p class="subtitle">Grupo Chavantes | Hospital Waldemar Tebaldi</p>
+            </div>
+        </header>
+
+        <main>
+            <div class="button-grid">
+                <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-button" aria-label="Acessar serviços de Hotelaria e Refrigeração">
+                    <i class="fas fa-concierge-bell" aria-hidden="true"></i>
+                    <span>Hotelaria e Refrigeração</span>
+                </a>
+
+                <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-button" aria-label="Acessar serviços de Tecnologia e Informação">
+                    <i class="fas fa-laptop-code" aria-hidden="true"></i>
+                    <span>Tecnologia e Informação</span>
+                </a>
+
+                <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-button" aria-label="Acessar serviços de Manutenção Predial">
+                    <i class="fas fa-tools" aria-hidden="true"></i>
+                    <span>Manutenção Predial</span>
+                </a>
+
+                <a href="#" class="service-button" aria-label="Acessar Ouvidoria">
+                    <i class="fas fa-headset" aria-hidden="true"></i>
+                    <span>Ouvidoria</span>
+                </a>
+
+                <a href="https://forms.office.com/r/wF9c5wZDE0" class="service-button emergency" aria-label="Registrar ou consultar Eventos Adversos">
+                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span>Eventos Adversos</span>
+                </a>
+
+                <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=zpcUiDXjFUm3XESJ0zo7Iq55wzZul6NLk8wUgLmIXpNUNFk2SVBMMEtSUjFRTEMwWTJQSDJDNkhTWS4u" class="service-button compliance" aria-label="Acessar Canal de Compliance">
+                    <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                    <span>Canal de Compliance</span>
+                </a>
+
+                <a href="https://santacasachavantes.sharepoint.com/sites/intranet.hmamericana/SitePages/ProjectHome.aspx" class="service-button documents" aria-label="Acessar Documentos Institucionais">
+                    <i class="fas fa-folder-open" aria-hidden="true"></i>
+                    <span>Documentos Institucionais</span>
+                </a>
+
+                <a href="https://hmamericana.local.conectew.com.br/" class="service-button" aria-label="Acessar ERP Wareline">
+                    <i class="fas fa-cogs" aria-hidden="true"></i>
+                    <span>ERP Wareline</span>
+                </a>
+
+                <a href="Padronização Medicamentos HMA (1).pdf" class="service-button" aria-label="Acessar Padronização de Materiais e Medicamentos">
+                    <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                    <span>Materiais Padrão</span>
+                </a>
+            </div>
+        </main>
+
+        <footer>
+            <p>Portal Interno - HMA Grupo Chavantes &copy; <span id="current-year"></span></p>
+            <p>Desenvolvido por @Quincrafts &copy; <span id="current-year"></span></p>
+            <p class="last-update">Última atualização: <span id="last-update"></span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Atualiza o ano atual no footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Formata a data da última atualização
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        document.getElementById('last-update').textContent = new Date().toLocaleDateString('pt-BR', options);
+        
+        // Adiciona classe de carregamento para transições suaves após o carregamento
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.body.classList.add('loaded');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
