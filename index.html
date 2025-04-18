@@ -39,9 +39,11 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(0, 143, 251, 0.08) 0%, transparent 20%),
                 linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, transparent 100px);
+            opacity: 0; /* Para efeito de carregamento suave */
+            transition: opacity 0.5s ease-in-out;
         }
 
         .container {
@@ -132,6 +134,7 @@
 
         .main-content {
             padding: 30px 0;
+            flex-grow: 1; /* Garante que o main ocupe o espaço disponível */
         }
 
         .welcome-section {
@@ -166,6 +169,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--text-primary); /* Garante cor do título */
         }
 
         .section-title i {
@@ -236,6 +240,7 @@
             font-weight: 500;
             transition: var(--transition);
             text-align: center;
+            margin-top: auto; /* Empurra o link para o final do card */
         }
 
         .service-link:hover {
@@ -279,6 +284,7 @@
 
         .quick-link:hover {
             background-color: rgba(255,255,255,0.05);
+            transform: translateY(-2px); /* Leve efeito ao passar o mouse */
         }
 
         .quick-link i {
@@ -329,47 +335,218 @@
             color: var(--button-bg);
         }
 
+        /* --- ESTILOS PARA SEÇÃO DE ANÚNCIOS --- */
+        .announcements-section {
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+
+        .announcement-card {
+            background-color: var(--secondary-bg);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: var(--box-shadow);
+            position: relative; /* Necessário para posicionar o botão fechar */
+            padding-right: 50px; /* Espaço para o botão fechar */
+            margin-bottom: 15px; /* Espaço antes da paginação */
+        }
+
+         .announcement-card h4 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-right: 25px; /* Garante espaço para não sobrepor o botão fechar */
+        }
+
+        .announcement-card p,
+        .announcement-card ul {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .announcement-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .announcement-card li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .announcement-card li::before {
+            content: '•';
+            color: var(--button-bg);
+            position: absolute;
+            left: 0;
+            top: -1px;
+            font-size: 1.2rem;
+        }
+
+        .announcement-card .urgent-contact {
+            font-weight: 500;
+            color: var(--text-primary);
+            background-color: rgba(0, 143, 251, 0.1);
+            padding: 10px 15px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* Botão Fechar (X) */
+        .close-announcement {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .close-announcement:hover {
+            color: var(--text-primary);
+        }
+
+        /* Paginação */
+        .announcement-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .pagination-button {
+            background-color: var(--secondary-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            border-radius: 50%; /* Botões redondos */
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .pagination-button:hover:not(:disabled) {
+            background-color: var(--button-bg);
+            color: white;
+        }
+
+        .pagination-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--card-bg); /* Cor de fundo mais escura para desabilitado */
+        }
+
+        #announcement-page-indicator {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Animação Sutil ao trocar anúncio (opcional) */
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        #announcements-container .announcement-card {
+          animation: fadeIn 0.4s ease-out;
+        }
+        /* --- FIM DOS ESTILOS DE ANÚNCIOS --- */
+
+
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
             }
-            
+
             .user-info {
                 margin-top: 10px;
                 align-self: flex-end;
             }
-            
+
             .services-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
-            
-            .welcome-section {
+
+            .welcome-section, .announcement-card { /* Aplica padding responsivo ao anúncio também */
                 padding: 20px;
+                padding-right: 45px; /* Ajusta padding direito para botão fechar em telas menores */
+            }
+             .announcement-card h4 {
+                 padding-right: 20px;
+             }
+
+
+            .links-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Ajusta links rápidos */
             }
         }
 
         @media (max-width: 480px) {
-            .services-grid {
-                grid-template-columns: 1fr;
+            body {
+                font-size: 15px; /* Ajusta fonte base para telas menores */
             }
-            
-            .section-title {
+
+            h1 {
                 font-size: 1.2rem;
             }
-            
+            .subtitle {
+                font-size: 0.8rem;
+            }
             .welcome-title {
                 font-size: 1.3rem;
             }
-            
+            .announcement-card h4 {
+                font-size: 1.1rem;
+            }
+            .section-title {
+                font-size: 1.2rem;
+            }
+            .service-title {
+                 font-size: 1rem;
+            }
+
+            .services-grid, .links-grid {
+                grid-template-columns: 1fr; /* Coluna única para cards e links */
+            }
+
+             .welcome-section, .announcement-card {
+                padding: 15px;
+                padding-right: 40px; /* Ajusta padding direito */
+             }
+             .announcement-card h4 {
+                 padding-right: 15px;
+             }
+
             .footer-content {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .footer-links {
                 justify-content: center;
+                margin-top: 10px;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -387,8 +564,7 @@
                 </div>
             </div>
             <div class="user-info">
-                <div class="user-avatar">JS</div>
-            </div>
+                <div class="user-avatar">JS</div> </div>
         </div>
     </header>
 
@@ -403,16 +579,24 @@
                 </p>
             </section>
 
+            <section class="announcements-section" id="announcements-section" style="display: none;"> <h3 class="section-title"><i class="fas fa-bullhorn"></i> Anúncios e Notificações</h3>
+                <div id="announcements-container">
+                    </div>
+                <div class="announcement-pagination" id="announcement-pagination" style="display: none;"> <button id="prev-announcement" class="pagination-button" title="Anterior"><i class="fas fa-chevron-left"></i></button>
+                    <span id="announcement-page-indicator"></span>
+                    <button id="next-announcement" class="pagination-button" title="Próximo"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
             <section class="services-section">
                 <h3 class="section-title"><i class="fas fa-th-large"></i> Serviços Principais</h3>
                 <div class="services-grid">
-                    <div class="service-card">
+                     <div class="service-card">
                         <div class="service-icon">
                             <i class="fas fa-concierge-bell"></i>
                         </div>
                         <div class="service-content">
                             <h4 class="service-title">Hotelaria e Refrigeração</h4>
-                            <p class="service-description">Solicitações de serviços de hotelaria e manutenção de equipamentos de refrigeração</p>
+                            <p class="service-description">Solicitações de serviços de hotelaria e manutenção de equipamentos de refrigeração.</p>
                             <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-link">Acessar</a>
                         </div>
                     </div>
@@ -423,7 +607,7 @@
                         </div>
                         <div class="service-content">
                             <h4 class="service-title">Tecnologia e Informação</h4>
-                            <p class="service-description">Suporte técnico e solicitações para o departamento de TI</p>
+                            <p class="service-description">Suporte técnico e solicitações para o departamento de TI.</p>
                             <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-link">Acessar</a>
                         </div>
                     </div>
@@ -434,7 +618,7 @@
                         </div>
                         <div class="service-content">
                             <h4 class="service-title">Manutenção Predial</h4>
-                            <p class="service-description">Solicitação de serviços de manutenção e reparos na infraestrutura</p>
+                            <p class="service-description">Solicitação de serviços de manutenção e reparos na infraestrutura.</p>
                             <a href="https://hmamericana.local.conectew.com.br/conecte/manutencao/site/solicman/view.jsf" class="service-link">Acessar</a>
                         </div>
                     </div>
@@ -445,7 +629,7 @@
                         </div>
                         <div class="service-content">
                             <h4 class="service-title">Eventos Adversos</h4>
-                            <p class="service-description">Registro e consulta de eventos adversos e incidentes</p>
+                            <p class="service-description">Registro e consulta de eventos adversos e incidentes.</p>
                             <a href="https://forms.office.com/r/wF9c5wZDE0" class="service-link">Acessar</a>
                         </div>
                     </div>
@@ -456,7 +640,7 @@
                         </div>
                         <div class="service-content">
                             <h4 class="service-title">Canal de Compliance</h4>
-                            <p class="service-description">Comunicação de questões éticas e de conformidade</p>
+                            <p class="service-description">Comunicação de questões éticas e de conformidade.</p>
                             <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=zpcUiDXjFUm3XESJ0zo7Iq55wzZul6NLk8wUgLmIXpNUNFk2SVBMMEtSUjFRTEMwWTJQSDJDNkhTWS4u" class="service-link">Acessar</a>
                         </div>
                     </div>
@@ -467,7 +651,7 @@
                         </div>
                         <div class="service-content">
                             <h4 class="service-title">Documentos Institucionais</h4>
-                            <p class="service-description">Acesso aos manuais, políticas e procedimentos do hospital</p>
+                            <p class="service-description">Acesso aos manuais, políticas e procedimentos do hospital.</p>
                             <a href="https://santacasachavantes.sharepoint.com/sites/intranet.hmamericana/SitePages/ProjectHome.aspx" class="service-link">Acessar</a>
                         </div>
                     </div>
@@ -497,6 +681,9 @@
                         <i class="fas fa-brain"></i>
                         <span>Tomografia</span>
                     </a>
+                     <a href="#" class="quick-link"> <i class="fas fa-calendar-alt"></i>
+                        <span>Agenda</span>
+                    </a>
                 </div>
             </section>
         </div>
@@ -504,32 +691,258 @@
 
     <footer>
         <div class="footer-content">
-            <p class="footer-text">Portal Interno - HMA Grupo Chavantes &copy; <span id="current-year"></span></p>
+            <p class="footer-text">Portal Interno - HMA Grupo Chavantes &copy; <span class="current-year"></span></p>
             <div class="footer-links">
                 <a href="#" class="footer-link">Política de Privacidade</a>
                 <a href="#" class="footer-link">Termos de Uso</a>
                 <a href="#" class="footer-link">Suporte</a>
             </div>
-            <p class="footer-text">Desenvolvido por @Quincrafts &copy; <span id="current-year"></span></p>
+            <p class="footer-text">Desenvolvido por @Quincrafts &copy; <span class="current-year"></span></p>
         </div>
     </footer>
 
     <script>
-        // Atualiza o ano atual no footer
-        document.querySelectorAll('#current-year').forEach(el => {
-            el.textContent = new Date().getFullYear();
-        });
-        
-        // Simulação de dados do usuário (em um ambiente real, isso viria de autenticação)
-        const userInitials = 'JS'; // Iniciais do usuário
-        document.querySelector('.user-avatar').textContent = userInitials;
-        
-        // Adiciona efeito de carregamento suave
         document.addEventListener('DOMContentLoaded', function() {
+
+            // --- DADOS DOS ANÚNCIOS ---
+            // Adicione seus anúncios aqui. Cada um é um objeto com id, titulo e conteudo (pode ser HTML).
+            const announcementsData = [
+                {
+                    id: 'pascoa2025', // Use um ID único para cada anúncio
+                    titulo: '📢 Plantão T.I. - Feriado de Páscoa 2025 📢', // Atualizado para data atual
+                    conteudo: `
+                        <p>Pessoal, atenção para a escala de suporte T.I. no feriadão (18/04 a 21/04):</p>
+                        <ul>
+                            <li>Sex (18/04): Gustavo (Remoto)</li>
+                            <li>Sáb (19/04): Elton (Presencial 8h-12h)</li>
+                            <li>Dom (20/04): Emergências (Remoto - Equipe Sobreaviso)</li>
+                            <li>Seg (21/04): Guilherme (Remoto)</li>
+                        </ul>
+                        <p class="urgent-contact">
+                            🚨 Precisa de ajuda URGENTE? Ligue no PABX 201 para falar com o plantonista.
+                        </p>
+                        <p>Desejamos a todos uma Feliz Páscoa! 🐰🥚</p>
+                    `
+                },
+                {
+                    id: 'atualizacaoSistema',
+                    titulo: '⚠️ Atualização Importante do Sistema WARELINE⚠️',
+                    conteudo: `
+                        <p>Informamos que o Sistema WARELINE passará por uma atualização essencial na próxima terça-feira (22/04), das 22:00 às 23:00.</p>
+                        <p>Durante este período, o sistema poderá apresentar instabilidade ou ficar temporariamente indisponível.</p>
+                        <p class="urgent-contact">
+                            🚨 Precisa de aacesso? Consulte a T.I para ter acesso a versão em nuvem do sistema.
+                        </p>
+                        <p>Agradecemos a compreensão.</p>
+                    `
+                },
+                {
+                    id: 'campanhas',
+                    titulo: 'Capacitação TEA - Transtorno do Espectro Autista 🧩 ',
+                    conteudo: `
+                        <p>Nos dias 28 e 29/04 na Sala de Reunião da Diretoria será ministrado curso de capacitação, com certificado</p>
+                        <p>Horários: 8:30 às 10:30 e 14 às 16hrs.</p>
+                        <p>Público alvo: Colaboradores assistencial e administrativo.</p>
+                    `
+                }
+                // Adicione mais anúncios aqui conforme necessário
+            ];
+
+            // --- VARIÁVEIS GLOBAIS DO MÓDULO DE ANÚNCIOS ---
+            let currentAnnouncementIndex = 0;
+            let activeAnnouncements = [];
+            let closedAnnouncements = [];
+
+            // --- ELEMENTOS DO DOM ---
+            const announcementsSection = document.getElementById('announcements-section');
+            const container = document.getElementById('announcements-container');
+            const paginationControls = document.getElementById('announcement-pagination');
+            const prevButton = document.getElementById('prev-announcement');
+            const nextButton = document.getElementById('next-announcement');
+            const pageIndicator = document.getElementById('announcement-page-indicator');
+
+            // --- FUNÇÕES ---
+
+            // Carrega IDs dos anúncios fechados do localStorage
+            function loadClosedAnnouncements() {
+                try { // Adiciona try-catch para segurança com localStorage
+                    closedAnnouncements = JSON.parse(localStorage.getItem('closedAnnouncements_hmamericana') || '[]');
+                    if (!Array.isArray(closedAnnouncements)) { // Garante que seja um array
+                         closedAnnouncements = [];
+                    }
+                } catch (e) {
+                    console.error("Erro ao carregar anúncios fechados:", e);
+                    closedAnnouncements = [];
+                }
+            }
+
+            // Salva IDs dos anúncios fechados no localStorage
+            function saveClosedAnnouncements() {
+                 try {
+                     localStorage.setItem('closedAnnouncements_hmamericana', JSON.stringify(closedAnnouncements));
+                 } catch (e) {
+                      console.error("Erro ao salvar anúncios fechados:", e);
+                 }
+            }
+
+            // Filtra os anúncios que ainda não foram fechados
+            function filterActiveAnnouncements() {
+                activeAnnouncements = announcementsData.filter(announcement => !closedAnnouncements.includes(announcement.id));
+            }
+
+            // Exibe o anúncio no índice especificado
+            function displayAnnouncement(index) {
+                if (!container || index < 0 || index >= activeAnnouncements.length) {
+                    if (container) container.innerHTML = '';
+                    if(announcementsSection) announcementsSection.style.display = 'none';
+                    return;
+                }
+
+                const announcement = activeAnnouncements[index];
+                // Remove a animação antiga antes de adicionar o novo conteúdo
+                if (container.firstElementChild) {
+                    container.firstElementChild.style.animation = 'none';
+                }
+                container.innerHTML = `
+                    <div class="announcement-card" data-id="${announcement.id}">
+                        <button class="close-announcement" title="Fechar anúncio">&times;</button>
+                        <h4>${announcement.titulo}</h4>
+                        ${announcement.conteudo}
+                    </div>
+                `;
+                 // Força reflow para reiniciar a animação (opcional)
+                // void container.offsetWidth;
+                if (container.firstElementChild) {
+                    container.firstElementChild.style.animation = 'fadeIn 0.4s ease-out';
+                }
+
+
+                const closeButton = container.querySelector('.close-announcement');
+                if (closeButton) {
+                    closeButton.addEventListener('click', () => closeAnnouncement(announcement.id));
+                }
+
+                if(announcementsSection) announcementsSection.style.display = 'block';
+                updatePaginationControls();
+            }
+
+            // Atualiza a visibilidade e estado dos controles de paginação
+            function updatePaginationControls() {
+                 if (!paginationControls || !pageIndicator || !prevButton || !nextButton) return;
+
+                const totalActive = activeAnnouncements.length;
+
+                if (totalActive <= 1) {
+                    paginationControls.style.display = 'none';
+                } else {
+                    paginationControls.style.display = 'flex';
+                    pageIndicator.textContent = `${currentAnnouncementIndex + 1} / ${totalActive}`;
+                    prevButton.disabled = currentAnnouncementIndex === 0;
+                    nextButton.disabled = currentAnnouncementIndex === totalActive - 1;
+                }
+            }
+
+            // Função para fechar um anúncio específico
+            function closeAnnouncement(id) {
+                if (!closedAnnouncements.includes(id)) {
+                    closedAnnouncements.push(id);
+                    saveClosedAnnouncements();
+                    filterActiveAnnouncements();
+
+                    if (currentAnnouncementIndex >= activeAnnouncements.length) {
+                        currentAnnouncementIndex = Math.max(0, activeAnnouncements.length - 1);
+                    }
+
+                    if (activeAnnouncements.length > 0) {
+                        displayAnnouncement(currentAnnouncementIndex);
+                    } else {
+                        if(container) container.innerHTML = '';
+                        if(paginationControls) paginationControls.style.display = 'none';
+                        if(announcementsSection) announcementsSection.style.display = 'none';
+                    }
+                }
+            }
+
+            // Navega para o próximo anúncio
+            function showNextAnnouncement() {
+                if (currentAnnouncementIndex < activeAnnouncements.length - 1) {
+                    currentAnnouncementIndex++;
+                    displayAnnouncement(currentAnnouncementIndex);
+                }
+            }
+
+            // Navega para o anúncio anterior
+            function showPrevAnnouncement() {
+                if (currentAnnouncementIndex > 0) {
+                    currentAnnouncementIndex--;
+                    displayAnnouncement(currentAnnouncementIndex);
+                }
+            }
+
+            // Inicializa o sistema de anúncios
+            function initAnnouncements() {
+                // Verifica se os elementos necessários existem antes de prosseguir
+                 if (!announcementsSection || !container || !paginationControls || !prevButton || !nextButton || !pageIndicator) {
+                    console.warn("Elementos HTML dos anúncios não encontrados. Sistema de anúncios desativado.");
+                    return; // Interrompe a inicialização se faltar algum elemento crucial
+                }
+
+                loadClosedAnnouncements();
+                filterActiveAnnouncements();
+
+                if (activeAnnouncements.length > 0) {
+                    currentAnnouncementIndex = 0;
+                    displayAnnouncement(currentAnnouncementIndex); // Exibe o primeiro antes de adicionar listeners
+                    prevButton.addEventListener('click', showPrevAnnouncement);
+                    nextButton.addEventListener('click', showNextAnnouncement);
+                } else {
+                     announcementsSection.style.display = 'none';
+                }
+            }
+
+            // --- EXECUÇÃO INICIAL ---
+            initAnnouncements(); // Inicia o sistema de anúncios
+
+
+            // --- OUTROS SCRIPTS (mantidos) ---
+
+            // Atualiza o ano atual no footer
+            document.querySelectorAll('.current-year').forEach(el => {
+                 try { // Adiciona verificação se o elemento existe
+                    el.textContent = new Date().getFullYear();
+                 } catch(e) { console.warn("Elemento .current-year não encontrado ou erro ao definir ano.") }
+            });
+
+            // Simulação de dados do usuário
+            const userInitials = 'JS'; // Iniciais do usuário - Altere conforme necessário
+            const userAvatar = document.querySelector('.user-avatar');
+            if(userAvatar) userAvatar.textContent = userInitials;
+
+            // Adiciona efeito de carregamento suave
             setTimeout(function() {
                 document.body.style.opacity = '1';
             }, 50);
-        });
+
+            // Adiciona target="_blank" para links externos (exceto os .local)
+            document.querySelectorAll('a').forEach(link => {
+                try {
+                    const href = link.getAttribute('href');
+                    // Verifica se href existe e é uma string antes de chamar métodos de string
+                    if (href && typeof href === 'string') {
+                         if ((href.startsWith('http:') || href.startsWith('https://')) && !href.includes('.local.')) {
+                            if (!link.getAttribute('target')) {
+                                 link.setAttribute('target', '_blank');
+                                 link.setAttribute('rel', 'noopener noreferrer');
+                            }
+                        }
+                    }
+                } catch (e) {
+                     console.warn("Erro ao processar link:", link, e);
+                }
+            });
+
+        }); // Fim do DOMContentLoaded
+
     </script>
 </body>
 </html>
